@@ -1,4 +1,4 @@
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
+const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, Browsers } = require('@whiskeysockets/baileys');
 const pino = require('pino');
 const fs = require('fs');
 const path = require('path');
@@ -70,7 +70,9 @@ class WhatsAppService {
                 auth: state,
                 printQRInTerminal: true,
                 logger: pino({ level: process.env.LOG_LEVEL || 'silent' }),
-                browser: ['Qloudflow WhatsApp', 'Chrome', '1.0.0']
+                browser: Browsers.macOS('Desktop'),
+                syncFullHistory: false,
+                generateHighQualityLinkPreview: true
             });
 
             this.sock.ev.on('creds.update', saveCreds);
