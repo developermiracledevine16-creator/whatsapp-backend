@@ -35,10 +35,10 @@ router.get('/qr', async (req, res) => {
 
     try {
         const qrDataUrl = await qrcode.toDataURL(qrText, {
-            margin: 2,
-            scale: 8,
+            margin: 3,
+            scale: 6,
             color: {
-                dark: '#0f172a',
+                dark: '#000000',
                 light: '#ffffff'
             }
         });
