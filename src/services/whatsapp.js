@@ -1,4 +1,4 @@
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, Browsers } = require('@whiskeysockets/baileys');
+const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, Browsers, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
 const pino = require('pino');
 const fs = require('fs');
 const path = require('path');
@@ -65,14 +65,19 @@ class WhatsAppService {
 
         try {
             const { state, saveCreds } = await useMultiFileAuthState(this.authDir);
+            const { version } = await fetchLatestBaileysVersion().catch(() => ({ version: [2, 3000, 1015901307] }));
 
             this.sock = makeWASocket({
+                version,
                 auth: state,
                 printQRInTerminal: true,
                 logger: pino({ level: process.env.LOG_LEVEL || 'silent' }),
                 browser: Browsers.macOS('Desktop'),
                 syncFullHistory: false,
-                generateHighQualityLinkPreview: true
+                generateHighQualityLinkPreview: true,
+                connectTimeoutMs: 60000,
+                defaultQueryTimeoutMs: 60000,
+                keepAliveIntervalMs: 30000
             });
 
             this.sock.ev.on('creds.update', saveCreds);
